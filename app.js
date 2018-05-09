@@ -44,6 +44,13 @@ function initApp(config, callback) {
 			});
 		},
 
+    function(next) {
+      require('./model/org')(app, function(error, model) {
+        app.model.org = model;
+        next(error);
+      });
+    },
+
 		function(next) {
 			require('./model/result')(app, function(error, model) {
 				app.model.result = model;
@@ -69,6 +76,8 @@ function initApp(config, callback) {
 			if (config.dbOnly) {
 				return next();
 			}
+      require('./route/org')(app);
+      require('./route/orgTasks')(app);
 			require('./route/tasks')(app);
 			require('./route/task')(app);
 			app.server.start(next);

@@ -57,6 +57,10 @@ function run(app) {
 function runPa11yOnTasks(tasks, app, done) {
 
 	var queue = async.queue(function(task, nextInQueue) {
+		if (task.type !== 'recurring') {
+      console.log('One off task skipping %s', task.id);
+      return nextInQueue();
+		}
 		console.log('Starting task %s', task.id);
 		app.model.task.runById(task.id, function(error) {
 			if (error) {
@@ -74,5 +78,4 @@ function runPa11yOnTasks(tasks, app, done) {
 	};
 
 	queue.push(tasks);
-
 }

@@ -19,6 +19,7 @@
 'use strict';
 
 var ObjectID = require('mongodb').ObjectID;
+var getRuleBasedCount = require('../data/standard').getRuleBasedCount;
 
 // Result model
 module.exports = function(app, callback) {
@@ -160,14 +161,18 @@ module.exports = function(app, callback) {
 					task: result.task.toString(),
 					date: new Date(result.date).toISOString(),
 					count: result.count,
+					passed: result.passed,
+					ruleCount: result.ruleCount,
 					ignore: result.ignore || [],
 					results: result.results || []
 				};
 			},
-			convertPa11y2Results: function(results) {
+			convertPa11y2Results: function(task, results) {
+				var ruleCount = getRuleBasedCount(task.standard, results);
 				var resultObject = {
 					count: {
 						total: results.length,
+						passed: ruleCount.passed,
 						error: results.filter(function(result) {
 							return (result.type === 'error');
 						}).length,
@@ -178,6 +183,8 @@ module.exports = function(app, callback) {
 							return (result.type === 'notice');
 						}).length
 					},
+					passed: ruleCount.passed,
+          ruleCount: ruleCount.count,
 					results: results
 				};
 				return resultObject;

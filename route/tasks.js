@@ -30,6 +30,7 @@ module.exports = function(app) {
 		method: 'GET',
 		path: '/tasks',
 		handler: function(request, reply) {
+			console.log('tasks get');
 			model.task.getAll(function(error, tasks) {
 				if (error || !tasks) {
 					return reply().code(500);
@@ -70,6 +71,7 @@ module.exports = function(app) {
 		method: 'POST',
 		path: '/tasks',
 		handler: function(request, reply) {
+      console.log('tasks post');
 			if (request.payload.actions && request.payload.actions.length) {
 				for (var action of request.payload.actions) {
 					if (!validateAction(action)) {
@@ -94,6 +96,11 @@ module.exports = function(app) {
 				query: {},
 				payload: {
 					name: Joi.string().required(),
+          type: Joi.string().required().valid([
+          	'recurring',
+						'single'
+					]),
+          org: Joi.string().required(),
 					timeout: Joi.number().integer(),
 					wait: Joi.number().integer(),
 					url: Joi.string().required(),

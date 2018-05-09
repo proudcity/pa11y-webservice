@@ -94,6 +94,8 @@ module.exports = function(app) {
 						}
 					}
 				}
+				// Don't let task change org
+				request.payload.org = task.org;
 				model.task.editById(task.id, request.payload, function(error, updateCount) {
 					if (error || updateCount < 1) {
 						return reply().code(500);
@@ -112,6 +114,10 @@ module.exports = function(app) {
 				query: {},
 				payload: {
 					name: Joi.string().required(),
+          type: Joi.string().required().valid([
+            'recurring',
+            'single'
+          ]),
 					timeout: Joi.number().integer(),
 					wait: Joi.number().integer(),
 					ignore: Joi.array(),

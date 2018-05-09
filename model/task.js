@@ -32,7 +32,9 @@ module.exports = function(app, callback) {
 	app.db.collection('tasks', function(error, collection) {
 		collection.ensureIndex({
 			name: 1,
+			org: 1,
 			url: 1,
+			type: 1,
 			standard: 1
 		}, {
 			w: -1
@@ -44,6 +46,9 @@ module.exports = function(app, callback) {
 			// Create a task
 			create: function(newTask, callback) {
 				newTask.headers = model.sanitizeHeaderInput(newTask.headers);
+        if (newTask.org && !(newTask.org instanceof ObjectID)) {
+          newTask.org = new ObjectID(newTask.org);
+        }
 				collection.insert(newTask, function(error, result) {
 					if (error) {
 						return callback(error);
@@ -59,6 +64,7 @@ module.exports = function(app, callback) {
 					.sort({
 						name: 1,
 						standard: 1,
+            type: 1,
 						url: 1
 					})
 					.toArray(function(error, tasks) {
@@ -68,6 +74,30 @@ module.exports = function(app, callback) {
 						callback(null, tasks.map(model.prepareForOutput));
 					});
 			},
+
+      // Get all tasks by org
+			getAllByOrg: function(org, callback) {
+        try {
+          org = new ObjectID(org);
+        } catch (error) {
+          return callback(null, null);
+        }
+        collection
+          .find({
+						org: org
+					})
+          .sort({
+            name: 1,
+            standard: 1,
+            url: 1
+          })
+          .toArray(function(error, tasks) {
+            if (error) {
+              return callback(error);
+            }
+            callback(null, tasks.map(model.prepareForOutput));
+          });
+      },
 
 			// Get a task by ID
 			getById: function(id, callback) {
@@ -98,6 +128,7 @@ module.exports = function(app, callback) {
 				var now = Date.now();
 				var taskEdits = {
 					name: edits.name,
+          type: edits.type, // could be recurring or single
 					timeout: parseInt(edits.timeout, 10),
 					wait: parseInt(edits.wait, 10),
 					actions: edits.actions,
@@ -162,6 +193,7 @@ module.exports = function(app, callback) {
 						return callback(error);
 					}
 					var pa11yOptions = {
+            type: task.type, // could be recurring or single
 						standard: task.standard,
 						timeout: (task.timeout || 30000),
 						wait: (task.wait || 0),
@@ -201,13 +233,14 @@ module.exports = function(app, callback) {
 							try {
 								var test = pa11y(pa11yOptions);
 								test.run(task.url, next);
+								console.log(test.run);
 							} catch (error) {
 								return next(error);
 							}
 						},
 
 						function(results, next) {
-							results = app.model.result.convertPa11y2Results(results);
+							results = app.model.result.convertPa11y2Results(task, results);
 							results.task = new ObjectID(task.id);
 							results.ignore = task.ignore;
 							app.model.result.create(results, next);
@@ -222,6 +255,8 @@ module.exports = function(app, callback) {
 				var output = {
 					id: task._id.toString(),
 					name: task.name,
+          org: task.org.toString(),
+          type: task.type, // could be recurring or single
 					url: task.url,
 					timeout: (task.timeout ? parseInt(task.timeout, 10) : 30000),
 					wait: (task.wait ? parseInt(task.wait, 10) : 0),

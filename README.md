@@ -1,3 +1,11 @@
+ProudCity Pa11y Webservice
+================
+
+db.tasks.find({"_id": ObjectId("5a30fd23222365a66ec635fb")});
+
+db.tasks.update({"_id": ObjectId("5a30fd23222365a66ec635fb")}, { $set: { "type": "recurring" } }, { "upsert": true });
+
+db.tasks.remove({"_id" : ObjectId("5a323eac49c7ac7ad5d3f6ef")});
 
 Pa11y Webservice
 ================
