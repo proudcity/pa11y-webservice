@@ -27,7 +27,7 @@
     "chalk": "~1.1",
     "cron": "~1.1",
     "hapi": "~12.1",
-    "joi": "~6.10",
+    "joi": "~13.3",
     "mongodb": "~2.1",
     "pa11y": "^4.13.2",
     "underscore": "~1.8"
@@ -37,7 +37,7 @@
     "mocha": "^3",
     "pa11y-lint-config": "^1.0.0",
     "proclaim": "^3",
-    "request": "^2"
+    "request": "^2.86.0"
   },
   "main": "./app.js",
   "scripts": {

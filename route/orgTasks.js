@@ -68,7 +68,6 @@ module.exports = function(app) {
         checkLimit(request.params.id, tasks).then(function(limitCheck) {
           // If .message, over limit
           const code = limitCheck.message ? 403 : 200;
-          console.log(limitCheck);
           reply(limitCheck).code(code);
         }).catch(function(limitError) {
           console.log(limitError);

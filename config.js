@@ -24,8 +24,11 @@ if (fs.existsSync(jsonPath)) {
 		database: env('DATABASE', 'mongodb://localhost/pa11y-webservice'),
 		host: env('HOST', '0.0.0.0'),
 		port: Number(env('PORT', '3000')),
-		cron: env('CRON', false)
+		cron: env('CRON', false),
+    maxTrackedTasks: env('MAXTRACKEDTASKS', 5)
 	};
+
+	console.log(module.exports);
 }
 
 function env(name, defaultValue) {
