@@ -26,8 +26,8 @@
     "async": "~1.5",
     "chalk": "~1.1",
     "cron": "~1.1",
-    "hapi": "~17.3.0",
-    "joi": "~13.3",
+    "hapi": "~16",
+    "joi": "~9.0",
     "mongodb": "~2.1",
     "pa11y": "^4.13.2",
     "underscore": "~1.8"
@@ -37,7 +37,7 @@
     "mocha": "^3",
     "pa11y-lint-config": "^1.0.0",
     "proclaim": "^3",
-    "request": "^2.86.0"
+    "request": "^2.83.0"
   },
   "main": "./app.js",
   "scripts": {
