@@ -33,7 +33,7 @@
     "underscore": "~1.8"
   },
   "devDependencies": {
-    "eslint": "^3.18.0",
+    "eslint": "^5.2.0",
     "mocha": "^3",
     "pa11y-lint-config": "^1.0.0",
     "proclaim": "^3",
