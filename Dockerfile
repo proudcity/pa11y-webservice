@@ -3,7 +3,9 @@
 FROM node:8
 
 # install ssh for npm git and phantom dep
-RUN apt-get update && apt-get -y install ssh libfontconfig libfreetype6
+RUN apt-get update && apt-get -y install ssh libfontconfig libfreetype6 vim \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # https://github.com/nodejs/docker-node/issues/479#issuecomment-319446283
 # and https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#global-npm-dependencies
@@ -27,6 +29,8 @@ WORKDIR /home/node/app
 RUN npm install
 
 # EXPOSE 3000
+
+RUN chown -R node:node ./logs
 
 USER node
 
