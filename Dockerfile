@@ -12,6 +12,11 @@ ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 ENV PATH=$PATH:/home/node/.npm-global/bin
 ENV NODE_ENV="production"
 
+# allow node user to bind to port 80 https://gist.github.com/firstdoit/6389682
+RUN setcap 'cap_net_bind_service=+ep' `which node`
+
+RUN npm install -g forever
+
 # Copy app's source code to the /app directory
 COPY . /home/node/app
 
@@ -21,8 +26,9 @@ WORKDIR /home/node/app
 # Install Node.js dependencies defined in '/app/packages.json'
 RUN npm install
 
-EXPOSE 3000
+# EXPOSE 3000
 
 USER node
+
 # Start the application
-CMD ["npm", "start"]
+CMD forever -l ./logs/server.log -o ./logs/out.log -e ./logs/err.log index.js

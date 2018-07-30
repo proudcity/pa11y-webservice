@@ -117,7 +117,7 @@ module.exports = function(app) {
         query: {},
         payload: {
           name: Joi.string().required(),
-          limit: Joi.number().integer().required()
+          limit: Joi.number().integer().optional()
         }
       }
     }
@@ -166,7 +166,7 @@ module.exports = function(app) {
         query: {},
         payload: {
           name: Joi.string().required(),
-          limit: Joi.number().integer().required(),
+          limit: Joi.number().integer().optional(),
           headers: [
             Joi.string().allow(''),
             Joi.object().pattern(/.*/, Joi.string().allow(''))

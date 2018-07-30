@@ -22,6 +22,7 @@ var async = require('async');
 var chalk = require('chalk');
 var ObjectID = require('mongodb').ObjectID;
 var pa11y = require('pa11y');
+var config = require('../config');
 
 function pa11yLog(message) {
   console.log(chalk.grey('  > ' + message));
@@ -42,6 +43,8 @@ module.exports = function(app, callback) {
       // Create a org
       create: function(newOrg, callback) {
         newOrg.headers = model.sanitizeHeaderInput(newOrg.headers);
+        // @TODO allow individual orgs to have a limit
+        // newOrg.limit = newOrg.limit || config.maxTrackedTasks;
         collection
           .findOne({ name: newOrg.name }, function(error, org) {
             if (error) {
@@ -113,7 +116,8 @@ module.exports = function(app, callback) {
         }
         var orgEdits = {
           name: edits.name,
-          limit: edits.limit
+          // @TODO allow individual orgs to have a limit
+          // limit: edits.limit || config.maxTrackedTasks
         };
         collection.update({_id: id}, {$set: orgEdits}, function(error, updateCount) {
           if (error || updateCount < 1) {
@@ -141,7 +145,9 @@ module.exports = function(app, callback) {
         var output = {
           id: org._id.toString(),
           name: org.name,
-          limit: org.limit
+          // limit: org.limit
+          // @TODO allow individual orgs to have a limit
+          limit: config.maxTrackedTasks,
         };
         if (org.headers) {
           if (typeof org.headers === 'string') {
