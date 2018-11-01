@@ -1,6 +1,13 @@
 ProudCity Pa11y Webservice
 ================
 
+##  Build
+```
+docker build -t gcr.io/proudcity-1184/pa11y-webservice:0.1.6 .
+docker push gcr.io/proudcity-1184/pa11y-webservice:0.1.6
+```
+## API
+
 db.tasks.find({"_id": ObjectId("5a30fd23222365a66ec635fb")});
 
 db.tasks.update({"_id": ObjectId("5a30fd23222365a66ec635fb")}, { $set: { "type": "recurring" } }, { "upsert": true });
