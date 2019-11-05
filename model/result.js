@@ -52,9 +52,11 @@ module.exports = function(app, callback) {
 			// Default filter options
 			_defaultFilterOpts: function(opts) {
 				var now = Date.now();
-				var thirtyDaysAgo = now - (1000 * 60 * 60 * 24 * 30);
+				// var thirtyDaysAgo = now - (1000 * 60 * 60 * 24 * 30);
+				var oneYearAgo = now - (1000 * 60 * 60 * 24 * 365);
 				return {
-					from: (new Date(opts.from || thirtyDaysAgo)).getTime(),
+					// If we have a limit, use a year ago just to grab everything
+					from: (new Date(opts.from || oneYearAgo)).getTime(),
 					to: (new Date(opts.to || now)).getTime(),
 					full: Boolean(opts.full),
 					task: opts.task
@@ -70,6 +72,9 @@ module.exports = function(app, callback) {
 						$gt: opts.from
 					}
 				};
+				if (opts.limit === undefined) {
+					opts.limit = 30;
+				}
 				if (opts.task) {
 					filter.task = new ObjectID(opts.task);
 				}
